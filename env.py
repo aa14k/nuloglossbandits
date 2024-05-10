@@ -11,7 +11,7 @@ def acrobotinit():
 # rn reward is 1 for being at height of 1 above pivot
 def acrobotstep(s, a, h, H):
     goal = lambda s: int(-cos(s[0]) - cos(s[0]+s[1]) >= 1)
-    if goal(s): return s, int(h==H)
+    if goal(s): return s, int(h==H) # currently this freezes in place upon a success
     def dynamics(s):
         t1, t2, dt1, dt2 = s
         d1=cos(t2)+3.5
@@ -28,8 +28,6 @@ def acrobotstep(s, a, h, H):
     clip(s,[0,0,-4*pi,-9*pi],[2*pi,2*pi,4*pi,9*pi],s)
     return s, goal(s)*(h==H)
 
-# todo either this freezes in place on success or it requires the agent to stay upright through to the end
-
 def mountaincarinit():
     return (np.random.random(2)/5 - .6) * [1,0]
 
@@ -43,9 +41,41 @@ def mountaincarstep(s, a, h, H):
     # hit left and reset velocity to 0
     # hit right and stay
 
-# todo from http://incompleteideas.net/book/code/pole.c
+# http://incompleteideas.net/book/code/pole.c
 def cartpoleinit():
-    pass
+    return np.zeros(4) # gym does np.random.random(4)*.1 - .05
 
 def cartpolestep(s, a):
-    pass
+    done = lambda s: abs(s[0]) >= 4.8 or abs(s[2]) >= .418
+    if done(s): return s, 0# don't reset
+    x, dx, t, dt = s
+    f = 10*(2*a-1) # a in {0,1}
+    g = 9.8; mc = 1; mp = .1; l = .5; tau = .02
+    temp = (f + (mp*l)*dt**2*sin(t))/(mp+mc)
+    thetaacc=(g*sin(t) - cos(t)*temp)/(l*(4/3 - mp * cos(t)**2/(mp+mc)))
+    xacc = temp - mp*l*thetaacc*cos(t)/(mp+mc)
+    # update
+    x += tau*dx
+    dx += tau*xacc
+    t += tau*dt
+    dt += tau*thetaacc
+    # end
+    f32max = np.finfo(np.float32).max
+    bound=np.array([4.8,f32max,2*pi,f32max],np.float32)
+    s = clip([x,dx,t,dt],-bound,bound)
+    return s, float(done(s))
+
+
+'''
+cart pos is in -+4.8
+angle is in -+.418 rads
+pos,dpos,ang,dang
+velocities can by -+inf
+
+the "epsiode terminates"
+if pos is not in -+2.4
+if ang is not in -+.2095
+
+gym starts w/ all obs in -+.05, so we'll start at *0*
+
+'''
