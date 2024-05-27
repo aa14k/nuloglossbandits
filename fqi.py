@@ -1,4 +1,3 @@
-from tqdm import tqdm
 from scipy.optimize import minimize
 import numpy as np
 
@@ -21,10 +20,11 @@ def fqi(loss, inputs, cs, s_s, gamma, rounds):
     l, dl = (llog, dllog) if loss=='log' else (lsq, dlsq)
     shape = (inputs.shape[1]//s_s.shape[1], s_s.shape[1])
     w = np.zeros(shape)
-    for _ in tqdm(range(rounds)):
+    zeros = np.zeros(w.size)
+    for _ in range(rounds):
         # this target computation assumes (nonzero cost => done)
         targets = np.maximum(cs, gamma * sigmoid(w@s_s.T).min(axis=0))
-        w = minimize(fun=l, x0=np.zeros(w.size), method='L-BFGS-B',
+        w = minimize(fun=l, x0=zeros, method='L-BFGS-B',
                      jac=dl, args=(inputs, targets),
                      options={'gtol': 1e-4}).x.reshape(shape)
     return w
