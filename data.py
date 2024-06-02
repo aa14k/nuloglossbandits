@@ -7,8 +7,8 @@ def data(n, env, nactions, features, save=True):
     data = []; done = True
     for _ in range(n):
         if done: s = env.init()
-        s_, done = env.step(s, a:=np.random.randint(nactions))
-        data.append((s,a,done,s:=s_))
+        s_, c, done = env.step(s, a:=np.random.randint(nactions))
+        data.append((s,a,c,s:=s_))
     # save s, a, c, s_
     np.savetxt(str:=dt.now().strftime(f'data/{n}-%H.%M.%S-%d.%m'),
                [np.concatenate((s,[a,c],s_)) for (s,a,c,s_) in data])
