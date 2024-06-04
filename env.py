@@ -28,18 +28,29 @@ def acrobotstep(s, a, h, H):
     clip(s,[0,0,-4*pi,-9*pi],[2*pi,2*pi,4*pi,9*pi],s)
     return s, goal(s)*(h==H)
 
-def mountaincarinit():
-    return (np.random.random(2)/5 - .6) * [1,0]
+# everything is vectorised by width, works with 1 but has dim=2
+# the done signal is scalar
+def mountaincarinit(width=1):
+    return np.vstack((np.random.uniform(-.6,-.4,width), np.zeros(width))).T
+    # return (np.random.random(2)/5 - .6) * [1,0]
 
-def mountaincarstep(s, a, h, H):
-    if s[0]==.5: return s, int(h==H)
-    elif s[0]==-1.2: s[1]=0
-    s=clip([s.sum(),s[1]+.001*a-.0025*cos(3*s[0])],[-1.2,-.07],[.5,.07])
-    return s, (s[0]==.5)*(h==H)
+def mountaincarstep(s, a, h, H=800):
+    F=.001;      G=.0025
+    dp, p = s.T
+    dp = np.clip((dp*(p!=-1.2) + (a-1)*F - np.cos(3*p)*G)*(p!=.5),
+                 -.07,.07)
+    p = np.clip(p + dp, -1.2, .5)
+    s = np.vstack((dp,p)).T
+    return s, (p==.5).astype(np.float32)*(h==H), (h==H)
+    # if s[0]==.5: return s, int(h==H)
+    # elif s[0]==-1.2: s[1]=0
+    # s=clip([s.sum(),s[1]+.001*a-.0025*cos(3*s[0])],[-1.2,-.07],[.5,.07])
+    # return s, (s[0]==.5)*(h==H)
     # x := clip(x + x', -1.2, .5)
     # x' := clip(x' + .001a - .0025cos(3x),-.07,.07)
     # hit left and reset velocity to 0
     # hit right and stay
+    # A = [0, 1, 2], H = 800
 
 # http://incompleteideas.net/book/code/pole.c
 def cartpoleinit():

@@ -15,9 +15,9 @@ import datetime
 NJOBS = 45 # parallelism
 GAMMA = 0.95
 ROUNDS = 600 # rounds for fqi
-NS = [1000 * (i+1) for i in range(8)] # input data sizes
+NS = [1000 * (i+1) for i in range(5)] # input data sizes
 MAXEVALSTEPS = 3000
-NRUNS = 45 # how many models to check for each n value
+NRUNS = 9 # how many models to check for each n value
 ORD = 4 # order of basis
 # environment
 MIN = np.array([-np.pi/2,-5])
