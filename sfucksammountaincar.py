@@ -13,7 +13,7 @@ import datetime
 
 # experiment
 NJOBS = 15 # parallelism (15 should be memory safe)
-NS = [9000, 21000, 30000]
+NS = [21000, 30000]
 # [1000, 3000, 6000, 9000, 12000, 15000, 18000, 21000, 24000, 27000, 30000]
 NRUNS = 15 # how many models to check for each n value
 ORD = 6 # order of basis
