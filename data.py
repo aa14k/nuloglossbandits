@@ -62,9 +62,9 @@ def mcdata2(n, env, nactions, features, ns, H):
     while True:
         data = np.zeros((H,n,6))
         s = env.init(n)
-        for h in range(1, H+1):
+        for h in range(H):
             s_, c = env.step(s,a:=np.random.randint(nactions,size=n),h,H)
-            data[h-1] = np.concatenate((s,np.vstack((a,c)).T,s:=s_),1)
+            data[h] = np.concatenate((s,np.vstack((a,c)).T,s:=s_),1)
         if (data[H-1,:,3]==0).sum() >= ns:
             break
     # print(data.shape, sum(data[H-1,:,3]))

@@ -27,7 +27,7 @@ def fqi(loss, ss, a_s, cs, s_s, H):
                 targets=sigmoid(w[h+1]@(s_s[h][a_s[h]==a]).T).min(axis=0)
             else:
                 targets = cs[h][a_s[h]==a]
-            w[h,a] = minimize(l, 0.0*np.random.uniform(-.2,.2,featsize),
-                              method='bfgs', jac=dl,
+            w[h,a] = minimize(l, np.random.uniform(-.2,.2,featsize),
+                              method='l-bfgs-b', jac=dl,
                               args = (ss[h][a_s[h]==a], targets)).x
     return w

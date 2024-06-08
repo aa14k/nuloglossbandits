@@ -9,11 +9,10 @@ def init(width=1):
     return np.vstack((np.random.uniform(-.5,-.5,width),
                       np.zeros(width))).T
 
-# horizon is 1-indexed
 def step(s, a, h, H):
     F=.001;      G=.0025
     p, dp = s.T
     dp = np.clip((dp*(p!=-1.2) + (a-1)*F - np.cos(3*p)*G)*(p!=.5),
                  -.07,.07)
     p = np.clip(p + dp, -1.2, .5)
-    return np.vstack((p,dp)).T, (p!=.5).astype(np.float32)*(h==H)
+    return np.vstack((p,dp)).T, (p!=.5).astype(np.float32)*(h==H-1)

@@ -1,4 +1,4 @@
-from envs import mountaincar as env
+from envs import amountaincar as env
 from features import basis, fourier
 from data import mcdata2 as data
 from mcfqi import fqi
@@ -13,15 +13,14 @@ import datetime
 
 # experiment
 NJOBS = 15 # parallelism (15 should be memory safe)
-NS = [21000, 30000]
-# [1000, 3000, 6000, 9000, 12000, 15000, 18000, 21000, 24000, 27000, 30000]
-NRUNS = 15 # how many models to check for each n value
-ORD = 6 # order of basis
+NS = [6000, 9000, 12000, 15000, 18000, 21000, 24000, 27000, 30000]
+NRUNS = 10 # how many models to check for each n value
+ORD = 4 # order of basis
 # environment
 NSUCC = 5 # 1, 5, 30
 H = 800
 MIN = np.array([-.07,-1.2])
-SPREAD = np.array([.14,1.7])
+SPREAD = np.array([.14,1.8])
 NACTIONS = 3
 
 def exp(i):
