@@ -13,9 +13,9 @@ import datetime
 
 # experiment
 NJOBS = 45 # parallelism
-GAMMA = 0.999
+GAMMA = 0.95
 ROUNDS = 600 # rounds for fqi
-NS = [1000, 3000, 5000, 10000, 20000] # input data sizes
+NS = [5000, 10000, 20000] # input data sizes
 MAXEVALSTEPS = 2000
 NRUNS = 9 # how many models to check for each n value
 ORD = 4 # order of basis
