@@ -1,6 +1,6 @@
-from envs import invpendulum as env
+from envs import discountmountaincar as env
 from features import basis, fourier
-from data import data
+from data import mcdataconc as data
 from afqi import fqi
 from eval import eval
 from plot import plot
@@ -13,10 +13,10 @@ import datetime
 
 # experiment
 NJOBS = 45 # parallelism
-GAMMA = 0.95
+GAMMA = 0.999
 ROUNDS = 600 # rounds for fqi
-NS = [1000 * (i+1) for i in range(5)] # input data sizes
-MAXEVALSTEPS = 3000
+NS = [1000, 3000, 5000, 10000, 20000] # input data sizes
+MAXEVALSTEPS = 2000
 NRUNS = 9 # how many models to check for each n value
 ORD = 4 # order of basis
 # environment
@@ -31,10 +31,10 @@ def exp(i):
     inputs, cs, s_s = data(NS[i//NRUNS], env, NACTIONS, features)
     # fit models
     w_log = fqi('log', inputs, cs, s_s, GAMMA, ROUNDS)
-    log, _ = eval(w_log, env, features, MAXEVALSTEPS)
-    w_sq = fqi('sqr', inputs, cs, s_s, GAMMA, ROUNDS)
-    sqr, _ = eval(w_sq, env, features, MAXEVALSTEPS)
-    #print(log,sqr, cs.size)#
+    log, hlog = eval(w_log, env, features, MAXEVALSTEPS)
+    # w_sq = fqi('sqr', inputs, cs, s_s, GAMMA, ROUNDS)
+    # sqr, hsqr = eval(w_sq, env, features, MAXEVALSTEPS)
+    print(hlog, cs.size)#
     print('Job ' + str(i) + ' completed')
     return log, sqr
 

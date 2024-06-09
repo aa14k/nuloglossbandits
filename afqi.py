@@ -33,9 +33,10 @@ def fqi(loss, inputs, cs, s_s, gamma, rounds):
     w = np.zeros(shape)
     for _ in tqdm(range(rounds)):
         # this target computation assumes (nonzero cost => done)
-        x0 = np.random.uniform(low = -0.2,high = 0.2,size = w.size) # should be outside the for loop
-        targets = np.maximum(cs, gamma * sigmoid(w @ s_s.T).min(axis = 0))
-        w = minimize(fun = l, x0 = x0, method='bfgs',
+        x0 = np.random.uniform(low = -0.2,high = 0.2,size = w.size)
+        targets = np.where(cs==-1, cs,
+                           gamma *(sigmoid(w @ s_s.T).min(axis = 0)-1))+1
+        w = minimize(fun = l, x0 = x0, method='l-bfgs-b',
                     jac=dl, args = (inputs, targets),
                     ).x.reshape(shape)
     return w

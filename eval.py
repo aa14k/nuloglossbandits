@@ -5,8 +5,8 @@ def eval(w, env, features, maxsteps):
         if done: break
     return c, h
 
-def mc_eval(w, env, features, H):
-    s = env.init()
-    for h in range(H):
-        s, c = env.step(s, (w[h]@features(s)[0]).argmin(), h, H)
-    return c[0]
+# def mc_eval(w, env, features, H):
+#     s = env.init()
+#     for h in range(H):
+#         s, c = env.step(s, (w@features(s)).argmin())
+#     return c[0]
